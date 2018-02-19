@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	Installer for PDF Reader 3
+	
+	* This is a perMachine installer.
+
+	3.1, 24 Jan 2014. Changed manufacturer to Accessible and WebbIE
+	3.1.1, 17 Mar 2014. Fixed registry entries for handling PDF files (installer)
+	3.2.0, 9 Oct 2015. Updated Event Viewer registration to just be "PDFReader"
+	4.0.0, 19 Feb 2018. Renamed to WebbIE PDF Reader
+-->
+<?define ProductName="PDF Reader 4" ?>
+<?define Manufacturer="Accessible and WebbIE" ?>
+<?define UpgradeCode="{AAF6AE6C-68C1-48E8-BD62-36FF9009ED1B}" ?>
+<?define ProductVersion="4.0.0" ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:swid="http://schemas.microsoft.com/wix/TagExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <Product Id="*" Language="1033" Manufacturer="$(var.Manufacturer)" Name="$(var.ProductName)" UpgradeCode="$(var.UpgradeCode)" Version="$(var.ProductVersion)">
+        <Package Id="*" Compressed="yes" InstallerVersion="301" InstallScope="perMachine" InstallPrivileges="elevated" />
+        <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="MANUFACTURERDIR" Name="$(var.Manufacturer)">
+					<Directory Id="INSTALLDIR" Name="$(var.ProductName)">
+						<Component Feature="ProductFeature" Id="Common.Language.xml">
+							<File Id="Common.Language.xml" Source="..\PDFReader\bin\Release\Common.Language.xml" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\Ghostscript.NET.dll" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFDocument.ico" KeyPath="yes" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4\DefaultIcon" Type="string" Value="[#PDFDocument.ico]" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\pdfinfo.exe" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature" Id="PDFReader.exe">
+							<CreateFolder />
+							<File Source="..\PDFReader\bin\Release\PDFReader.exe" KeyPath="yes">
+								<Shortcut Id='EXEName.exe' Name='$(var.ProductName)' Directory='ManufacturerGroup' 
+								Icon='EXEName.exe' WorkingDirectory="INSTALLDIR" Advertise="yes">
+									<Icon Id='EXEName.exe' SourceFile='..\PDFReader\bin\Release\PDFReader.ico' />
+								</Shortcut>
+								<!-- Uncomment to create desktop shortcut -->
+								<!-- <Shortcut Id='DesktopShortcut' Name='$(var.ProductName)' Directory='DesktopFolder' Icon='EXEName.exe' Advertise="yes" />-->
+								<netfx:NativeImage Id="ngen_MyApplication.exe" Platform="32bit" Priority="0" AppBaseDirectory="INSTALLDIR" />
+							</File>
+							<RemoveFile Id='Cleanup' On='uninstall' Name='*.*'/>
+							<RemoveFolder Id="CleanupFolder" On="uninstall" />
+							<util:EventSource Log="Application" Name="PDFReader" EventMessageFile="[NETFRAMEWORK40INSTALLROOTDIR]EventLogMessages.dll"/>
+
+							<!-- Add myself as an Open With option. -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.pdf\OpenWithProgids" Name="PDFReader.PDF.4" Type="string" Value="" />
+							
+							<!-- ProgId entry. -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4" Type="string" Value="PDF Document" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4\shell\open\command" Type="string" Value='"[#PDFReader.exe]" "%1"' />
+							<!-- Need to duplicate the htmlfile (HTML handler) class entries because the documentation says so. -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4" Name="Content Type" Type="string" Value="application/pdf" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4" Name="PerceivedType" Type="string" Value="document" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\PDFReader.PDF.4\CLSID" Type="string" Value="{30049FBE-418F-438B-826A-1950D99FD98B}" />
+
+							<!-- Capabilities. See http://msdn.microsoft.com/en-us/library/cc144154(VS.85).aspx -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities" Type="string" Name="ApplicationDescription" Value="Read PDF files as plain text." />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities" Type="string" Name="ApplicationName" Value="$(var.ProductName)" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities" Type="string" Name="ApplicationIcon" Value="[#PDFReader.exe],0" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities\FileAssociations" Type="string" Name=".pdf" Value="PDFReader.PDF.4" /> 
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities\MimeAssociations" Type="string" Name="application/pdf" Value="PDFReader.PDF.4" /> 
+							<RegistryValue Root="HKLM" Key="SOFTWARE\RegisteredApplications" Type="string" Name="$(var.ProductName)" Value="SOFTWARE\Classes\Applications\PDFReader.exe\Capabilities" /> 
+							
+							<!-- Register app for ShellExecute http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\pdfreader.exe" Type="string" Value="[#PDFReader.exe]" />
+
+							<!-- Give app a nice name. http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+							<RegistryValue Root="HKLM" Key="Software\Classes\Applications\PDFReader.exe" Type="string" Value="$(var.ProductName)" />
+							<!-- Tell Windows that the app can open pdf files.  http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+							<RegistryValue Root="HKLM" Key="Software\Classes\Applications\PDFReader.exe\SupportedTypes" Name=".pdf" Value="" Type="string" />
+
+							<!-- Register .pdf file types, and that I can open them. http://msdn.microsoft.com/en-us/library/cc144148(v=vs.85).aspx -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.pdf\OpenWithProgids" Type="string" Value="PDFReader.PDF.4" />
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.pdf" Name="Content Type" Type="string" Value="application/pdf" />
+							<!-- PerceivedType should be set: http://msdn.microsoft.com/en-us/library/cc144150(v=vs.85).aspx -->
+							<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\.pdf" Name="PerceivedType" Type="string" Value="document" />
+						
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFReader.exe.config" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFReader.Help-en.rtf" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFReader.ico" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFReader.Language.xml" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\PDFReader.pdb" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\pdftotext.exe" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\Tesseract.dll" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\WebbIEUpdater.dll" KeyPath="yes" />
+						</Component>
+						<Component Feature="ProductFeature">
+							<File Source="..\PDFReader\bin\Release\xpdfrc" KeyPath="yes" />
+						</Component>
+					</Directory>
+					<Directory Id='ProgramMenuFolder'>
+						<Directory Id='ManufacturerGroup' Name='$(var.Manufacturer)'>
+							<Component Id="ProgramGroup" Guid="*" Feature="ProductFeature"> 
+								<RemoveFolder Id="ProgramGroup" On="uninstall" />
+								<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)" Type="string" Value="Installed" />
+							</Component>
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+			<Directory Id='WindowsFolder' />
+			<Directory Id='ProfilesFolder' />
+			<Directory Id="CommonAppDataFolder" />
+			<Directory Id='StartMenuFolder' />
+			<Directory Id='DesktopFolder' />
+        </Directory>
+        <Feature Id="ProductFeature" Level="1" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLDIR" />
+        <Media Id="1" Cabinet="pdfrdr.cab" EmbedCab="yes" />
+		<Property Id='WIXUI_INSTALLDIR' Value='INSTALLDIR' />
+		<!-- <UIRef Id='WixUI_Minimal' />
+		<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+		<WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+		<WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" /> -->
+		<CustomAction Id="SAVETARGETDIR" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" /> 
+		<InstallExecuteSequence>
+			<Custom Action="SAVETARGETDIR" After="InstallValidate" />
+		</InstallExecuteSequence>
+		<Property Id="MSIFASTINSTALL" Value="7" />
+		<Property Id='ARPPRODUCTICON' Value='EXEName.exe' />
+		<Property Id='ARPHELPLINK' Value='https://www.webbie.org.uk/pdfreader' />		
+		<!-- Upgrade self and prevent downgrade -->
+		<InstallExecuteSequence>
+			<!-- Uninstall old version BEFORE installing any of our own files. Less efficient but safer. -->
+			<RemoveExistingProducts After="InstallValidate" />
+			<!-- Run application -->
+			<Custom Action="LaunchApplication" After="InstallFinalize">NOT Installed AND SUPPRESS_START&lt;&gt;"1"</Custom>
+		</InstallExecuteSequence>
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion Minimum="0.0.1" Maximum="$(var.ProductVersion)" Property="UPGRADE_SELF" IncludeMinimum="yes" IncludeMaximum="no" IgnoreRemoveFailure="yes" MigrateFeatures="yes" ExcludeLanguages="yes" />
+			<UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />		
+		</Upgrade>		
+		<Condition Message="A newer version of [ProductName] is already installed.  You must uninstall that package before this one can be installed.">
+			NOT NEWERVERSIONDETECTED
+		</Condition> 	
+		<Property Id="WixShellExecTarget" Value="[#PDFReader.exe]" />
+		<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    </Product>
+</Wix>

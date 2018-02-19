@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	Installer for PDF Reader 3
+	
+	* This is a perUser installer, see http://blogs.msdn.com/b/astebner/archive/2007/11/18/6385121.aspx
+	* Ignore ICE91: "These warnings are harmless if the package is only used for installation in the 
+		per-user installation context and never used for per-machine installations." See
+		http://msdn.microsoft.com/en-us/library/windows/desktop/aa369053(v=vs.85).aspx
+	
+
+
+-->
+<?define ProductName="PDF Reader 3" ?>
+<?define Manufacturer="Alasdair King" ?>
+<?define UpgradeCode="{AAF6AE6C-68C1-48E8-BD62-36FF9009ED1B}" ?>
+<?define ProductVersion="3.0.5" ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Language="1033" Manufacturer="$(var.Manufacturer)" Name="$(var.ProductName)" UpgradeCode="$(var.UpgradeCode)" Version="$(var.ProductVersion)">
+        <Package Id="*" Compressed="yes" InstallerVersion="301" InstallScope="perUser" InstallPrivileges="limited" />
+        <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="LocalAppDataFolder">
+				<Directory Id="INSTALLDIR" Name="$(var.ProductName)">
+					<Component Feature="ProductFeature" Id="Common.Language.xml" Guid="{A4503EFE-BC95-4A03-A860-575B5D2C00FA}">
+						<File Id="Common.Language.xml" Source="SourceDir\Common.Language.xml" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\Common.Language.xml" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFDocument.ico" Guid="{7D22D051-9D8D-4270-9885-E63820628CF3}">
+						<File Id="PDFDocument.ico" Source="SourceDir\PDFDocument.ico" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFDocument.ico" Type="string" Value="Installed" KeyPath="yes" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFReader.PDF.3\DefaultIcon" Type="string" Value="[#PDFDocument.ico]" />
+					</Component>
+					<Component Feature="ProductFeature" Id="pdfinfo.exe" Guid="{FB5293AC-426A-46ED-8E4A-E7780DEF2D00}">
+						<File Id="pdfinfo.exe" Source="SourceDir\pdfinfo.exe" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\pdfinfo.exe" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFReader3.exe" Guid="{B92CB08D-B330-48BB-88DD-219EBA2DEBCB}">
+						<CreateFolder />
+						<File Id="PDFReader3.exe" Source="SourceDir\PDFReader3.exe">
+							<Shortcut Id='EXEName.exe' Name='$(var.ProductName)' Directory='MyProgramFolder' 
+							Icon='EXEName.exe' WorkingDirectory="INSTALLDIR">
+								<Icon Id='EXEName.exe' SourceFile='SourceDir\PDFReader3.ico' />
+							</Shortcut>
+							<Shortcut Id='DesktopShortcut' Name='$(var.ProductName)' Directory='DesktopFolder' Icon='EXEName.exe' />
+						</File>
+						<RemoveFile Id='Cleanup' On='uninstall' Name='*.*'/>
+						<RemoveFolder Id="CleanupFolder" On="uninstall" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFReader3.exe" Type="string" Value="Installed" KeyPath="yes" />
+
+						<!-- Add myself as an Open With option. -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\.pdf\OpenWithProgids" Name="PDFReader.PDF.3" Type="string" Value="" />
+						
+						<!-- ProgId entry. Only need one because .htm and .html are the same type. See also webbie4htmldoc.ico for DefaultIcon. 
+							 It says HTM because that's what we're registering to handle, so if we added PDF support that would be WebbIE.PDF.4.
+						-->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFRReader.PDF.3" Type="string" Value="PDF Document" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFRReader.PDF.3\shell\open\command" Type="string" Value='"[#PDFReader3.exe]" "%1"' />
+						<!-- Need to duplicate the htmlfile (HTML handler) class entries because the documentation says so. -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFRReader.PDF.3" Name="Content Type" Type="string" Value="application/pdf" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFRReader.PDF.3" Name="PerceivedType" Type="string" Value="document" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\PDFRReader.PDF.3\CLSID" Type="string" Value="{363068A9-9D0F-4609-A6C9-E8F56228BA2E}" />
+
+						<!-- Capabilities. See http://msdn.microsoft.com/en-us/library/cc144154(VS.85).aspx -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities\Capabilities" Type="string" Name="ApplicationDescription" Value="Read PDF files as plain text." />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities\Capabilities" Type="string" Name="ApplicationName" Value="$(var.ProductName)" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities\Capabilities" Type="string" Name="ApplicationIcon" Value="[#PDFReader3.exe],0" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities\Capabilities\FileAssociations" Type="string" Name=".pdf" Value="PDFReader.PDF.3" /> 
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities\Capabilities\MimeAssociations" Type="string" Name="application/pdf" Value="PDFReader.PDF.3" /> 
+						<RegistryValue Root="HKCU" Key="SOFTWARE\RegisteredApplications" Type="string" Name="$(var.ProductName)" Value="SOFTWARE\Classes\Applications\PDFReader3.exe\Capabilities" /> 
+						
+						<!-- Register app for ShellExecute http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\pdfreader3.exe" Type="string" Value="[#PDFReader3.exe]" />
+
+						<!-- Give app a nice name. http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+						<RegistryValue Root="HKCU" Key="Software\Classes\Applications\PDFReader3.exe" Type="string" Value="$(var.ProductName)" />
+						<!-- Tell Windows that the app can open pdf files.  http://msdn.microsoft.com/en-us/library/ee872121(v=vs.85).aspx -->
+						<RegistryValue Root="HKCU" Key="Software\Classes\Applications\PDFReader3.exe\SupportedTypes" Name=".pdf" Value="" Type="string" />
+
+						<!-- Register .pdf file types, and that I can open them. http://msdn.microsoft.com/en-us/library/cc144148(v=vs.85).aspx -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\.pdf\OpenWithProgids" Type="string" Value="PDFReader.PDF.3" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\.pdf" Name="Content Type" Type="string" Value="application/pdf" />
+						<!-- PerceivedType should be set: http://msdn.microsoft.com/en-us/library/cc144150(v=vs.85).aspx -->
+						<RegistryValue Root="HKCU" Key="SOFTWARE\Classes\.pdf" Name="PerceivedType" Type="string" Value="document" />
+					
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFReader3.exe.config" Guid="{756BB0AB-B5C9-44B9-8034-EC020CE1FB82}">
+						<File Id="PDFReader3.exe.config" Source="SourceDir\PDFReader3.exe.config" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFReader3.exe.config" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFReader3.Help_en.rtf" Guid="{43D923FF-F429-4460-A3E2-0ECC83AB67EF}">
+						<File Id="PDFReader3.Help_en.rtf" Source="SourceDir\PDFReader3.Help-en.rtf" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFReader3.Help-en.rtf" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFReader3.ico" Guid="{D4AD3F87-FEEA-424B-AC93-88661E480B31}">
+						<File Id="PDFReader3.ico" Source="SourceDir\PDFReader3.ico" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFReader3.ico" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="PDFReader3.Language.xml" Guid="{C975E2C4-6BE4-48DD-81E3-EC2D54BE1E8D}">
+						<File Id="PDFReader3.Language.xml" Source="SourceDir\PDFReader3.Language.xml" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\PDFReader3.Language.xml" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+					<Component Feature="ProductFeature" Id="pdftotext.exe" Guid="{961B520C-91C6-4137-9C1F-769EF7462A30}">
+						<File Id="pdftotext.exe" Source="SourceDir\pdftotext.exe" />
+						<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)\pdftotext.exe" Type="string" Value="Installed" KeyPath="yes" />
+					</Component>
+				</Directory>
+				<Directory Id='ProgramMenuFolder'>
+					<Directory Id='MyProgramFolder' Name='$(var.Manufacturer)'>
+						<Component Id="ProgramGroup" Guid="*" Feature="ProductFeature"> 
+							<RemoveFolder Id="ProgramGroup" On="uninstall" />
+							<RegistryValue Root="HKCU" Key="SOFTWARE\$(var.ProductName)" Type="string" Value="Installed" />
+						</Component>
+					</Directory>
+				</Directory>
+			</Directory>
+			<Directory Id='WindowsFolder' />
+			<Directory Id='ProfilesFolder' />
+			<Directory Id="CommonAppDataFolder" />
+			<Directory Id='StartMenuFolder' />
+			<Directory Id='DesktopFolder' />
+        </Directory>
+        <Feature Id="ProductFeature" Level="1" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLDIR" />
+        <Media Id="1" Cabinet="product.cab" EmbedCab="yes" CompressionLevel="none" />
+		<Property Id='WIXUI_INSTALLDIR' Value='INSTALLDIR' />
+		<!-- <UIRef Id='WixUI_Minimal' />
+		<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+		<WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+		<WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" /> -->
+		<CustomAction Id="SAVETARGETDIR" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" /> 
+		<InstallExecuteSequence>
+			<Custom Action="SAVETARGETDIR" After="InstallValidate" />
+		</InstallExecuteSequence>
+		<Property Id="MSIFASTINSTALL" Value="1" />
+		<Property Id='ARPPRODUCTICON' Value='EXEName.exe' />
+		<!-- Upgrade self and prevent downgrade -->
+		<InstallExecuteSequence>
+			<!-- Uninstall old version BEFORE installing any of our own files. Less efficient but safer. -->
+			<RemoveExistingProducts After="InstallValidate" />
+			<!-- Run application -->
+			<Custom Action="LaunchApplication" After="InstallFinalize">NOT Installed AND SUPPRESS_START&lt;&gt;"1"</Custom>
+		</InstallExecuteSequence>
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion Minimum="0.0.1" Maximum="$(var.ProductVersion)" Property="UPGRADE_SELF" IncludeMinimum="yes" IncludeMaximum="no" IgnoreRemoveFailure="yes" MigrateFeatures="yes" ExcludeLanguages="yes" />
+			<UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />		
+		</Upgrade>		
+		<Condition Message="A newer version of [ProductName] is already installed.  You must uninstall that package before this one can be installed.">
+			NOT NEWERVERSIONDETECTED
+		</Condition> 	
+		<Property Id="ALLUSERS" Secure="yes"/>
+		<Condition Message="Setting the ALLUSERS property is not allowed because [ProductName] is a per-user application. Setup will now exit.">
+			NOT ALLUSERS
+		</Condition> 
+		<Property Id="WixShellExecTarget" Value="[#PDFReader3.exe]" />
+		<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    </Product>
+</Wix>

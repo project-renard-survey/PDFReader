@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="PDFReader.Content">
+            <Component Id="cmpEEB4FA99C74691EC922B53D78C77C4B2" Guid="PUT-GUID-HERE">
+                <File Id="filB34BED2A4A6E45D49A1BB062229E4C84" Source="$(var.PDFReader.ProjectDir)\PDFDocument.ico" />
+            </Component>
+            <Component Id="cmpA1EBA72A34BE9C84662C45B88F270732" Guid="PUT-GUID-HERE">
+                <File Id="fil7D4E6EB87145CE0D872C365C54092643" Source="$(var.PDFReader.ProjectDir)\PDFReader.ico" />
+            </Component>
+            <Directory Id="dir7F903316113C8CE2B9448EF293F82FD9" Name="gs" />
+            <Directory Id="dir54FAC8F72697426D2A11BA8945E31472" Name="x64" />
+            <Directory Id="dir97606190076AA65808798F45FAEADC21" Name="x86" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="PDFReader.Content">
+            <ComponentRef Id="cmpEEB4FA99C74691EC922B53D78C77C4B2" />
+            <ComponentRef Id="cmpA1EBA72A34BE9C84662C45B88F270732" />
+            <ComponentRef Id="cmpB90418EA578F308205E29EA1676380F5" />
+            <ComponentRef Id="cmp674682FEC2AD911D48725BBC65587153" />
+            <ComponentRef Id="cmp3DEE5B515B41055B02E9FAAE2A473E90" />
+            <ComponentRef Id="cmp594B62F78652824AC2C177E76EBC3EA1" />
+            <ComponentRef Id="cmp2EF8FEB16D1A12B408C74D0B24243DC2" />
+            <ComponentRef Id="cmp71338D4FC4F3809433535C36C9BB15D9" />
+            <ComponentRef Id="cmp842656E740704D35D6DBC61E5C07CF91" />
+            <ComponentRef Id="cmp2EF9D632CB006E408D9DDA1DC1A4FBCB" />
+            <ComponentRef Id="cmp8186D17AA6E46994F7AA6BA00EFF3F8A" />
+            <ComponentRef Id="cmp3412E67C697655B36966437D7A992090" />
+            <ComponentRef Id="cmp43D453D8662176A9E60E42E0BB806B76" />
+            <ComponentRef Id="cmp741E1EFFB6509BD41171EB847FE7FBCF" />
+            <ComponentRef Id="cmp5F4D668D475FB72AE9EE39A5AB17030C" />
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir54FAC8F72697426D2A11BA8945E31472">
+            <Component Id="cmp2EF8FEB16D1A12B408C74D0B24243DC2" Guid="PUT-GUID-HERE">
+                <File Id="fil4508ECB5723C00DECDD93F968A4F77A7" Source="$(var.PDFReader.ProjectDir)\x64\liblept168.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir54FAC8F72697426D2A11BA8945E31472">
+            <Component Id="cmp2EF9D632CB006E408D9DDA1DC1A4FBCB" Guid="PUT-GUID-HERE">
+                <File Id="fil823C306BD1FBEAEA78E526B5A4FE94F1" Source="$(var.PDFReader.ProjectDir)\x64\libtesseract304.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir97606190076AA65808798F45FAEADC21">
+            <Component Id="cmp3412E67C697655B36966437D7A992090" Guid="PUT-GUID-HERE">
+                <File Id="fil0E30C1BC50582B7F20B16F69171AC6D5" Source="$(var.PDFReader.ProjectDir)\x86\liblept168.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir7F903316113C8CE2B9448EF293F82FD9">
+            <Component Id="cmp3DEE5B515B41055B02E9FAAE2A473E90" Guid="PUT-GUID-HERE">
+                <File Id="fil21EAD898A13991FC38953687D6F74CB7" Source="$(var.PDFReader.ProjectDir)\gs\gswin32c.exe" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir97606190076AA65808798F45FAEADC21">
+            <Component Id="cmp43D453D8662176A9E60E42E0BB806B76" Guid="PUT-GUID-HERE">
+                <File Id="fil4507F98329473652B98FA4A68F6327F1" Source="$(var.PDFReader.ProjectDir)\x86\liblept172.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir54FAC8F72697426D2A11BA8945E31472">
+            <Component Id="cmp594B62F78652824AC2C177E76EBC3EA1" Guid="PUT-GUID-HERE">
+                <File Id="filE5841F4513EE3E698C7FAFD94BE885B3" Source="$(var.PDFReader.ProjectDir)\x64\gsdll64.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir97606190076AA65808798F45FAEADC21">
+            <Component Id="cmp5F4D668D475FB72AE9EE39A5AB17030C" Guid="PUT-GUID-HERE">
+                <File Id="filFA8E98FBB904CEF41A3DEA94071BCC38" Source="$(var.PDFReader.ProjectDir)\x86\libtesseract304.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir7F903316113C8CE2B9448EF293F82FD9">
+            <Component Id="cmp674682FEC2AD911D48725BBC65587153" Guid="PUT-GUID-HERE">
+                <File Id="fil762308EEEAA0A0486BAE1F29FA6A064A" Source="$(var.PDFReader.ProjectDir)\gs\gswin32.exe" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir54FAC8F72697426D2A11BA8945E31472">
+            <Component Id="cmp71338D4FC4F3809433535C36C9BB15D9" Guid="PUT-GUID-HERE">
+                <File Id="fil42DD4D3EB54A6EA3CBA42898349BB72E" Source="$(var.PDFReader.ProjectDir)\x64\liblept172.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir97606190076AA65808798F45FAEADC21">
+            <Component Id="cmp741E1EFFB6509BD41171EB847FE7FBCF" Guid="PUT-GUID-HERE">
+                <File Id="fil7C993286325285E38CE37B0390062F56" Source="$(var.PDFReader.ProjectDir)\x86\libtesseract302.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir97606190076AA65808798F45FAEADC21">
+            <Component Id="cmp8186D17AA6E46994F7AA6BA00EFF3F8A" Guid="PUT-GUID-HERE">
+                <File Id="fil337009271E02FF2C1018874E79B53922" Source="$(var.PDFReader.ProjectDir)\x86\gsdll32.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir54FAC8F72697426D2A11BA8945E31472">
+            <Component Id="cmp842656E740704D35D6DBC61E5C07CF91" Guid="PUT-GUID-HERE">
+                <File Id="fil33F1A0422B49A2B5631D647E1DCD14A3" Source="$(var.PDFReader.ProjectDir)\x64\libtesseract302.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir7F903316113C8CE2B9448EF293F82FD9">
+            <Component Id="cmpB90418EA578F308205E29EA1676380F5" Guid="PUT-GUID-HERE">
+                <File Id="fil63AEDD454FA4E1BCF047B5ECF84C4366" Source="$(var.PDFReader.ProjectDir)\gs\gsdll32.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

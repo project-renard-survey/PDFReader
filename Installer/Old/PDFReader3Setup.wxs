@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	Installer for PDF Reader 3
+	
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+    <Bundle Version="3.0.0" UpgradeCode="{D62FEBB2-778D-4459-AEEC-059154DF6DCF}">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+		    <bal:WixStandardBootstrapperApplication
+				LicenseUrl=""
+				SuppressOptionsUI="yes"
+			/>
+		</BootstrapperApplicationRef>
+		<Chain>
+			<PackageGroupRef Id="NetFx40ClientWeb"/>
+			<MsiPackage Id="PDFReader3" SourceFile="PDFReader3.msi"/>
+		</Chain>
+	</Bundle>
+</Wix>
